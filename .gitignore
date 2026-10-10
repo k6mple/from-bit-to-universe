@@ -27,3 +27,7 @@ Thumbs.db
 
 # vite
 .vite/
+
+# local dev probes (CDP / WebGL checks)
+glcheck.mjs
+timercheck.mjs
