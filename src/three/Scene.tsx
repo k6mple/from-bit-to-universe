@@ -153,8 +153,17 @@ function Director({ data, profile }: { data: WorldData; profile: DeviceProfile }
 
     // The numeral explodes on the way out of the hero, and everything
     // breathes outward once more at the very end.
+    //
+    // The decay is keyed to `rise`, not `seg`: during the hand-off `seg` is
+    // pinned, so a seg-keyed decay would hold the field at full dispersion for
+    // a whole viewport and then snap it back. Keyed to `rise`, the debris
+    // reassembles across exactly the same window in which the lattice forms.
+    // The dispersion has to resolve *before* the morph finishes, or the two
+    // overlap and every in-between frame is a cloud wider than the lens —
+    // smooth, but featureless. Resolving early splits the hand-off into two
+    // readable beats: the cloud gathers, then the lattice assembles.
     const scatter =
-      smoothstep(0.52, 0.94, seg) * (1 - smoothstep(0.99, 1.3, seg)) +
+      smoothstep(0.52, 0.96, seg) * (1 - smoothstep(1.04, 1.56, world.rise)) +
       smoothstep(6.55, 7.0, seg) * 0.4
     world.scatter = damp(world.scatter, world.reduced ? 0 : scatter, 4, dt)
 

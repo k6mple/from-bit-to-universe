@@ -74,7 +74,7 @@ export function BitField({ data }: { data: WorldData }) {
   )
 
   const sizeRef = useRef(3.4)
-  const segS = useRef(world.seg)
+  const riseS = useRef(world.rise)
   const morph = useRef<MorphState>({ from: 0, to: 1, t: 0 })
 
   useEffect(() => {
@@ -91,11 +91,11 @@ export function BitField({ data }: { data: WorldData }) {
     u.uTime.value = world.time
     u.uPixel.value = Math.min(gl.getPixelRatio(), 1.75)
 
-    // Morph. The damped quantity is the chapter POSITION, then from/to/t are
+    // Morph. The damped quantity is the structure POSITION, then from/to/t are
     // all derived from it together — see morphAt() for why damping `t` alone
     // makes the next chapter's shape flash up on every boundary.
-    segS.current = damp(segS.current, world.seg, 9, dt)
-    const m = morphAt(segS.current, morph.current)
+    riseS.current = damp(riseS.current, world.rise, 8, dt)
+    const m = morphAt(riseS.current, morph.current)
     u.uFrom.value = m.from
     u.uTo.value = m.to
     u.uT.value = m.t

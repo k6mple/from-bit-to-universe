@@ -27,6 +27,12 @@ export interface WorldState {
   scroll: number
   /** Continuous chapter position, 0 .. CHAPTER_COUNT-1 */
   seg: number
+  /**
+   * Structure coordinate. Holds at c+1 through chapter c's pinned window and
+   * advances c+1 → c+2 across the following hand-off, so shapes transform
+   * during the page transition rather than freezing through it.
+   */
+  rise: number
   /** Per-chapter local progress, 0..1 */
   ch: Float32Array
   /** Raw pointer, -1..1, origin at viewport centre */
@@ -81,6 +87,7 @@ export interface WorldState {
 export const world: WorldState = {
   scroll: 0,
   seg: 0,
+  rise: 1,
   ch: new Float32Array(CHAPTER_COUNT),
   pointer: { x: 0, y: 0 },
   pointerS: { x: 0, y: 0 },
@@ -165,29 +172,33 @@ export interface MorphState {
 }
 
 /**
- * Shape pair + blend for a chapter position. Chapter c holds shape c+1, and
- * the transition into it occupies the first half of the chapter so the
- * structure has settled before the text lands.
+ * Shape pair + blend for a value of `world.rise`.
  *
- * This is a pure function of ONE continuous value, and that is the entire
- * point. A chapter boundary flips the pair from (c, c+1) to (c+1, c+2) and
- * resets t from 1 to 0 in the same instant. Evaluate the three together and
- * the result is seamless — both sides describe shape c+1. Feed a *damped* t
- * into a freshly swapped pair and the dangling t=1 means `to`, so the shader
- * renders shape c+2: the next chapter's structure flashes up on the boundary
- * and then decays back. Damp the position, never the blend.
+ * `rise` is the coordinate the structure transforms on. It holds steady while
+ * a chapter is pinned and advances by exactly 1 across each hand-off — so the
+ * shape change happens *during* the page transition instead of being frozen
+ * by it. (Keying the morph to `seg` meant that the moment a chapter's stage
+ * unpinned, every seg-derived value stopped changing for a full viewport of
+ * scrolling: the field hung, fully dispersed, and then reassembled in a rush.)
+ *
+ * This is a pure function of ONE continuous value. A boundary flips the pair
+ * from (c, c+1) to (c+1, c+2) and resets t from 1 to 0 in the same instant;
+ * both sides describe shape c+1 only if all three move together. A *damped* t
+ * left dangling at 1 means `to`, so the next chapter's structure flashes up on
+ * every transition. Damp the position, never the blend.
  */
-export function morphAt(seg: number, out: MorphState): MorphState {
-  if (seg < 1) {
+export function morphAt(rise: number, out: MorphState): MorphState {
+  if (!world.introDone) {
     // The opening is owned by the intro timeline, not by scroll.
     out.from = Shape.Scatter
     out.to = Shape.Glyph
-    out.t = world.introDone ? 1 : world.intro
+    out.t = world.intro
     return out
   }
-  const c = Math.min(CHAPTER_COUNT - 1, Math.floor(seg))
-  out.from = c
-  out.to = c + 1
-  out.t = smoothstep(0.03, 0.44, seg - c)
+  const r = clamp(rise, 1, CHAPTER_COUNT - 0.0001)
+  const i = Math.floor(r)
+  out.from = i
+  out.to = i + 1
+  out.t = smoothstep(0.06, 0.94, r - i)
   return out
 }

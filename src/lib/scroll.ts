@@ -64,6 +64,28 @@ export function initScroll(
       }
     }
 
+    // --- structure coordinate ----------------------------------------
+    // Holds at c+1 through chapter c's pinned window, advances c+1 → c+2
+    // across the hand-off that follows it. The hand-off is the only place the
+    // page has room for the transformation: during a pinned window `seg`
+    // already carries the chapter's own progress, and pinning `rise` there is
+    // what keeps the structure settled while the words arrive.
+    let rise = CHAPTER_COUNT
+    for (let i = 0; i < bounds.length; i++) {
+      const b = bounds[i]
+      if (y < b.end) {
+        rise = i + 1
+        break
+      }
+      const nextTop = i + 1 < bounds.length ? bounds[i + 1].start : b.end
+      if (y < nextTop) {
+        const span = Math.max(1, nextTop - b.end)
+        rise = i + 1 + (y - b.end) / span
+        break
+      }
+    }
+    world.rise = Math.max(1, Math.min(CHAPTER_COUNT - 0.0001, rise))
+
     // Guard against pathological layouts.
     //
     // `seg` is continuous: chapter i occupies [i, i+1), so the valid range is
