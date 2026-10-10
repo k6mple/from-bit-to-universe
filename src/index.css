@@ -1,0 +1,462 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ *  TYPE — self-hosted, latin subset only.
+ *
+ *  The fontsource barrel files declare seven subsets each. Only latin is
+ *  ever fetched (unicode-range), but they would all be emitted into the
+ *  build. Declaring the two faces we actually use keeps the deploy honest:
+ *  one 48 kB file for the sans, one 40 kB file for the mono.
+ * ------------------------------------------------------------------ */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url('../node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
+    U+FEFF, U+FFFD;
+}
+
+/* ------------------------------------------------------------------ *
+ *  FROM BIT TO UNIVERSE — Art direction system
+ *  One palette, one type scale, one motion language. Every scene
+ *  is a variation on these tokens, never a new dialect.
+ * ------------------------------------------------------------------ */
+
+@theme {
+  --color-void: #04060b;
+  --color-void-1: #06090f;
+  --color-void-2: #0a0f18;
+  --color-ice: #8fd8ff;
+  --color-ice-deep: #2e7dd1;
+  --color-ice-dim: #4a7fa8;
+  --color-violet: #9b7bff;
+  --color-violet-deep: #4a2bb8;
+  --color-silver: #c9d6e4;
+  --color-ink: #e8eef5;
+
+  --font-sans: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo,
+    'PingFang SC', 'Noto Sans SC', monospace;
+}
+
+:root {
+  --ink: #e8eef5;
+  --ink-mute: rgba(232, 238, 245, 0.46);
+  --ink-faint: rgba(232, 238, 245, 0.24);
+  --ice: #8fd8ff;
+  --violet: #9b7bff;
+  --hair: rgba(143, 216, 255, 0.14);
+  --hair-soft: rgba(232, 238, 245, 0.08);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cine: cubic-bezier(0.65, 0.05, 0, 1);
+
+  --gutter: clamp(1.25rem, 4.2vw, 5.5rem);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  background: #04060b;
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  background: #04060b;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+body.is-locked {
+  overflow: hidden;
+  height: 100vh;
+}
+
+::selection {
+  background: rgba(143, 216, 255, 0.26);
+  color: #fff;
+}
+
+/* --- scrollbar: a hairline, not a chrome widget ------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(143, 216, 255, 0.16);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(143, 216, 255, 0.34);
+}
+
+/* ================================================================== *
+ *  TYPOGRAPHY
+ * ================================================================== */
+
+/**
+ * Headline type is Chinese, and Chinese is not Latin with different glyphs.
+ *
+ * Three rules that matter, and all three are the opposite of what Latin
+ * display type wants: no negative tracking (CJK glyphs already fill the em
+ * box, so tightening them collides the strokes), a line box taller than the
+ * glyphs (行距 — CJK has no ascender/descender to create air, so 0.9 line
+ * height stacks characters into a solid brick), and a weight that a system
+ * CJK face actually ships — Inter's variable axis cannot help here, because
+ * PingFang / YaHei / Noto are what will render.
+ *
+ * The size ramp is also roughly 0.7x the Latin one: Chinese characters carry
+ * far more mass per em, so matching the Latin size reads as shouting.
+ */
+.headline {
+  font-weight: 600;
+  letter-spacing: 0.012em;
+  line-height: 1.14;
+  text-wrap: balance;
+  text-rendering: optimizeLegibility;
+}
+
+.headline-xl {
+  font-size: clamp(1.9rem, 6.4vw, 6.2rem);
+}
+.headline-lg {
+  font-size: clamp(1.7rem, 5.4vw, 5.2rem);
+}
+.headline-md {
+  font-size: clamp(1.45rem, 4.5vw, 4.3rem);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: 'tnum' 1;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  text-shadow: 0 0 14px rgba(4, 6, 11, 0.9);
+  font-size: clamp(0.5625rem, 0.78vw, 0.72rem);
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(143, 216, 255, 0.72);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85em;
+}
+.eyebrow::before {
+  content: '';
+  width: clamp(14px, 2.4vw, 40px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(143, 216, 255, 0.75));
+}
+
+.lede {
+  font-size: clamp(0.9rem, 1.06vw, 1.0625rem);
+  line-height: 1.62;
+  color: rgba(232, 238, 245, 0.58);
+  font-weight: 380;
+  letter-spacing: -0.006em;
+  max-width: 34ch;
+  text-wrap: pretty;
+  text-shadow: 0 0 16px rgba(4, 6, 11, 0.92);
+}
+
+/**
+ * The English line under the Chinese headline.
+ *
+ * Set as a museum plaque, not a translation: small, tracked out, upper case,
+ * and clearly subordinate to the headline. Reads as a caption for the object
+ * rather than a second title competing with it.
+ */
+.subhead {
+  font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.19em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  font-weight: 440;
+  color: rgba(232, 238, 245, 0.62);
+  max-width: 58ch;
+  text-wrap: pretty;
+  text-shadow: 0 0 14px rgba(4, 6, 11, 0.9);
+}
+
+/* ================================================================== *
+ *  TEXT REVEAL PRIMITIVES — masked, staggered, never a blanket fade
+ * ================================================================== */
+
+/* Words, not blocks: masked reveals have to survive natural line wrapping. */
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding: 0.1em 0.02em;
+  margin: -0.1em -0.02em;
+}
+.mask > .mask-i {
+  display: inline-block;
+}
+
+.rise {
+  display: inline-block;
+}
+
+/* ================================================================== *
+ *  SURFACES + HAIRLINES
+ * ================================================================== */
+
+.hair-t {
+  border-top: 1px solid var(--hair-soft);
+}
+.hair-b {
+  border-bottom: 1px solid var(--hair-soft);
+}
+.hair-l {
+  border-left: 1px solid var(--hair-soft);
+}
+
+.glass {
+  background: linear-gradient(
+    170deg,
+    rgba(14, 22, 34, 0.62) 0%,
+    rgba(7, 11, 18, 0.52) 60%,
+    rgba(6, 9, 15, 0.6) 100%
+  );
+  border: 1px solid rgba(143, 216, 255, 0.1);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.glass-soft {
+  background: rgba(10, 15, 24, 0.42);
+  border: 1px solid rgba(143, 216, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ================================================================== *
+ *  CHAPTER LAYOUT
+ * ================================================================== */
+
+/* The single WebGL surface the entire film is projected onto. Sits behind
+   everything and never intercepts input — the DOM stays fully interactive. */
+.stage-canvas {
+  position: fixed !important;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 1;
+  pointer-events: none;
+  touch-action: pan-y;
+}
+
+.chapter {
+  position: relative;
+  width: 100%;
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: var(--gutter) 1fr var(--gutter);
+  grid-template-rows: 1fr;
+  align-items: center;
+  pointer-events: none;
+}
+.stage > * {
+  pointer-events: auto;
+}
+.stage-fill {
+  grid-column: 1 / -1;
+}
+
+/* ================================================================== *
+ *  INTERACTION
+ * ================================================================== */
+
+.magnetic {
+  transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+  transition: transform 0.5s var(--ease-out-expo);
+  will-change: transform;
+}
+.magnetic.is-live {
+  transition: transform 0.12s linear;
+}
+
+.linky {
+  position: relative;
+  color: var(--ink-mute);
+  transition: color 0.45s var(--ease-out-expo);
+}
+.linky::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease-out-expo);
+}
+.linky:hover {
+  color: var(--ice);
+}
+.linky:hover::after {
+  transform: scaleX(1);
+}
+
+/* progressive glow used on rails, ticks, chips */
+.glowable {
+  transition: background-color 0.6s var(--ease-out-expo), box-shadow 0.6s var(--ease-out-expo),
+    color 0.6s var(--ease-out-expo), border-color 0.6s var(--ease-out-expo);
+}
+
+.text-glow {
+  text-shadow: 0 0 22px rgba(143, 216, 255, 0.34), 0 0 64px rgba(74, 43, 184, 0.22);
+}
+
+/* ================================================================== *
+ *  TERMINAL
+ * ================================================================== */
+
+.term-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(143, 216, 255, 0.2) transparent;
+}
+
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 0.52em;
+  height: 1.02em;
+  margin-left: 0.16em;
+  background: var(--ice);
+  vertical-align: -0.16em;
+  animation: caret 1.05s steps(1, end) infinite;
+}
+@keyframes caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ================================================================== *
+ *  AMBIENT MOTION
+ * ================================================================== */
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes drift-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateY(-110%);
+  }
+  100% {
+    transform: translateY(360%);
+  }
+}
+
+.fade-in {
+  animation: fadein 1.4s var(--ease-out-expo) both;
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.no-anim,
+.no-anim * {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* ================================================================== *
+ *  MOBILE
+ * ================================================================== */
+
+@media (max-width: 720px) {
+  .headline {
+    /* Tracking that reads as refinement at 80px reads as gaps at 28px. */
+    letter-spacing: 0.005em;
+    line-height: 1.16;
+  }
+  .subhead {
+    letter-spacing: 0.15em;
+    max-width: none;
+  }
+  .lede {
+    max-width: none;
+  }
+  .stage {
+    grid-template-columns: 1.15rem 1fr 1.15rem;
+  }
+}
+
+@media (hover: none) {
+  .magnetic {
+    transform: none !important;
+  }
+}

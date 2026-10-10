@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#04060B" />
+    <meta name="color-scheme" content="dark" />
+    <title>FROM BIT TO UNIVERSE — 从比特到数字宇宙</title>
+    <meta
+      name="description"
+      content="An interactive digital art exhibition that travels from a single bit to a universe of thought. Scroll to enter."
+    />
+    <style>
+      html, body { margin: 0; background: #04060b; }
+      #root { min-height: 100vh; }
+      /* Prevent any flash of unstyled white before the bundle boots. */
+      .boot-void { position: fixed; inset: 0; background: #04060b; z-index: 0; }
+    </style>
+  </head>
+  <body>
+    <div class="boot-void"></div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
