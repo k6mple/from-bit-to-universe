@@ -303,6 +303,131 @@ body.is-locked {
 }
 
 /* ================================================================== *
+ *  THE WAY OUT
+ *
+ *  The film ends in a door, and the door is the only white object in it
+ *  — the only place the palette's near-white is used as a fill rather
+ *  than as ink. Everything else here is the piece's own idiom: a
+ *  hairline, a scrim tuned like a cinematographer's, one grade of
+ *  tracked-out mono.
+ * ================================================================== */
+
+.gate {
+  position: relative;
+  width: 100%;
+  /* A screenful for the rise, and a screenful for the door to stand in. */
+  height: 172vh;
+}
+
+/**
+ * The frost: a backdrop blur with no edge to find.
+ *
+ * A backdrop-filter is clipped to the element's box, so the mask has to
+ * feather the blur away *before* that box arrives, or the element's own
+ * silhouette shows as a seam across the galaxy. That is also why the stops
+ * are `farthest-side`: with the default `farthest-corner` the falloff reaches
+ * its end at the corners, leaving the blur still ~35% opaque where the sides
+ * stop — a visible square. The scrim under it is the same move as the chapter
+ * scrims, for the same reason: the white plate has to be legible over
+ * whatever the field is doing, and a touch of void does that without reading
+ * as a panel.
+ */
+.gate-frost {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  /* Capped at one viewport-min, not at 128vmin: the mask's last stop is where
+     the element stops, so a lens larger than the shorter screen dimension
+     would be cut off by the screen itself with blur still ~20% opaque — a
+     faint seam down the edge of a phone. At 100vmin the falloff always lands
+     inside the frame, and the square is never wider than its container, so
+     the auto margins stay positive and the lens stays centred. */
+  width: min(1060px, 100vmin);
+  height: min(1060px, 100vmin);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.62);
+  background: radial-gradient(
+    circle farthest-side at 50% 50%,
+    rgba(4, 6, 11, 0.54) 0%,
+    rgba(4, 6, 11, 0.34) 42%,
+    rgba(4, 6, 11, 0) 76%
+  );
+  backdrop-filter: blur(var(--gate-blur, 16px)) saturate(1.06);
+  -webkit-mask-image: radial-gradient(
+    circle farthest-side at 50% 50%,
+    #000 0%,
+    rgba(0, 0, 0, 0.92) 30%,
+    rgba(0, 0, 0, 0.42) 62%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: radial-gradient(
+    circle farthest-side at 50% 50%,
+    #000 0%,
+    rgba(0, 0, 0, 0.92) 30%,
+    rgba(0, 0, 0, 0.42) 62%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Reduced motion: the same composition, already arrived at. Nothing here
+   changes the picture — only that the scroll no longer opens it. Declared
+   after .gate-frost because the element carries both classes. */
+.gate-frost-static {
+  opacity: 1;
+  transform: none;
+}
+
+.gate-door {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(17px, 2.2vh, 22px) clamp(36px, 4.6vw, 62px);
+  border-radius: 9px;
+  background: #f1f6fb;
+  color: #04060b;
+  font-family: var(--font-mono);
+  font-size: clamp(0.8125rem, 1.05vw, 0.9375rem);
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-decoration: none;
+  cursor: pointer;
+  transform: scale(1);
+  box-shadow: 0 10px 34px rgba(4, 6, 11, 0.55), 0 0 0 1px rgba(232, 238, 245, 0.16);
+  transition: transform 0.55s var(--ease-out-expo), box-shadow 0.55s var(--ease-out-expo),
+    background-color 0.55s var(--ease-out-expo);
+  will-change: transform;
+}
+
+.gate-door:hover,
+.gate-door:focus-visible {
+  background: #ffffff;
+  transform: scale(1.045);
+  box-shadow: 0 16px 52px rgba(4, 6, 11, 0.5), 0 0 0 1px rgba(143, 216, 255, 0.85),
+    0 0 64px rgba(143, 216, 255, 0.34);
+}
+
+/* The keyboard gets one hairline more than the pointer, and it is a real
+   outline rather than a glow, so it survives forced-colours. */
+.gate-door:focus-visible {
+  outline: 1px solid rgba(143, 216, 255, 0.6);
+  outline-offset: 5px;
+}
+
+.gate-door:active {
+  transform: scale(0.985);
+  transition-duration: 0.12s;
+}
+
+/* Letter-spacing is added after the last glyph as well, so a four-character
+   label sits half a step left of the plate's centre. One step of leading
+   padding puts the glyphs back on the axis. */
+.gate-door-label {
+  padding-left: 0.3em;
+}
+
+/* ================================================================== *
  *  INTERACTION
  * ================================================================== */
 

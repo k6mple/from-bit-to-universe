@@ -1,0 +1,2 @@
+# 教程页要用的图片放在这个目录里，
+# 在 content.tsx 里用 <Figure src="tutorial/xxx.png" /> 引用。

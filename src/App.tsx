@@ -20,6 +20,7 @@ import { KernelPanel } from './ui/KernelPanel'
 import { MindPanel } from './ui/MindPanel'
 import { Hints } from './ui/Hints'
 import { Magnetic } from './ui/Magnetic'
+import { TutorialGate } from './ui/TutorialGate'
 
 const HEAD_GLOW =
   '0 0 12px rgba(4,6,11,0.8), 0 0 46px rgba(4,6,11,0.9), 0 0 110px rgba(74,43,184,0.22)'
@@ -278,6 +279,11 @@ export default function App() {
             </div>
           </ChapterText>
         </Chapter>
+
+        {/* ---------- the way out ------------------------------------ */}
+        {/* Deliberately not a `[data-chapter]`: it is past the last shape,
+            and the rig must not treat it as an eighth chapter. */}
+        <TutorialGate />
       </main>
 
       {!booted ? <Preloader onDone={() => setBooted(true)} /> : null}

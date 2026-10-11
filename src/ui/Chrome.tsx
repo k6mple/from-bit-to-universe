@@ -76,10 +76,22 @@ export function Chrome({ visible }: { visible: boolean }) {
           {/* The wordmark needs ~180px; below that it fights the readout. */}
           <span className="hidden whitespace-nowrap sm:inline">From Bit to Universe</span>
         </div>
-        <span
-          ref={readout}
-          className="mono shrink-0 text-right text-[10px] tracking-[0.3em] whitespace-nowrap text-[rgba(143,216,255,0.62)] tabular-nums"
-        />
+        <div className="flex shrink-0 items-center gap-[clamp(10px,1.6vw,22px)]">
+          <span
+            ref={readout}
+            className="mono shrink-0 text-right text-[10px] tracking-[0.3em] whitespace-nowrap text-[rgba(143,216,255,0.62)] tabular-nums"
+          />
+          <span className="h-[11px] w-px shrink-0 bg-[rgba(232,238,245,0.14)]" aria-hidden />
+          {/* The one way out of the piece. Inert until the chrome fades in. */}
+          <a
+            href="./tutorial.html"
+            tabIndex={visible ? 0 : -1}
+            style={{ pointerEvents: visible ? 'auto' : 'none' }}
+            className="linky mono shrink-0 text-[10px] tracking-[0.3em] whitespace-nowrap uppercase"
+          >
+            Tutorial
+          </a>
+        </div>
       </header>
 
       {/* --- progress rail ------------------------------------------- */}

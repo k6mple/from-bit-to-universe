@@ -18,6 +18,18 @@ npm run typecheck
 > to win32 binaries and the build fails with `Cannot find module '@rolldown/binding-linux-x64-gnu'`.
 > Install with a Linux npm instead — `corepack npm@11 install` is enough.
 
+## Pages
+
+Two entries, both built by `vite build` (multi-page, no router):
+
+| Path | Source | What it is |
+| --- | --- | --- |
+| `index.html` | `src/App.tsx` | the exhibition |
+| `tutorial.html` | `src/tutorial/` | the tutorial document — body copy lives in `src/tutorial/content.tsx`, components in `src/tutorial/components/`, images in `public/tutorial/` |
+
+The index chrome links to the tutorial; navigation is a plain relative href, which
+is what survives `base: './'` deployments in a subdirectory.
+
 ---
 
 ## The argument

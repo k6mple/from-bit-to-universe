@@ -10,6 +10,13 @@ export default defineConfig({
     cssCodeSplit: false,
     chunkSizeWarningLimit: 1400,
     rollupOptions: {
+      // Two pages, two entries: the exhibition, and the tutorial document.
+      // Relative paths resolve against the package root, which is where the
+      // npm scripts run vite from.
+      input: {
+        index: 'index.html',
+        tutorial: 'tutorial.html',
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {

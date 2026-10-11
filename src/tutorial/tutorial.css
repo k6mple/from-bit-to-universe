@@ -1,0 +1,143 @@
+/* ------------------------------------------------------------------ *
+ *  Tutorial document styling.
+ *
+ *  Loaded only by src/tutorial/main.tsx — but the build emits ONE
+ *  stylesheet for both pages (cssCodeSplit: false), so every rule here
+ *  is scoped to `.tut`, to a `--tut-` token, or to a `tut-` class.
+ *  Nothing below can reach the exhibition.
+ *
+ *  Type is inherited from index.css (Inter + JetBrains Mono), so the page
+ *  reads as the same publication. The palette is deliberately different:
+ *  neutral near-black and grey, not the exhibition's blue-black, because
+ *  this is a document you read rather than a space you move through.
+ * ------------------------------------------------------------------ */
+
+/* Plain custom properties, NOT a Tailwind `@theme` block: this file is
+   not a Tailwind entry (index.css is), so a `@theme` here would survive
+   into the bundle as an unknown at-rule and generate no utilities at all.
+   Components read these through Tailwind arbitrary values, e.g.
+   `text-[color:var(--tut-heading)]`. */
+:root {
+  --tut-bg: #0a0a0a;
+  --tut-surface: #121212; /* command block: a hair above the page */
+  --tut-surface-2: #171718; /* inline code, callout fill */
+  --tut-line: rgba(255, 255, 255, 0.1);
+  --tut-line-soft: rgba(255, 255, 255, 0.06);
+  --tut-heading: #fafafa;
+  --tut-text: #d6d6db;
+  --tut-code: #e6e6ea; /* command text: arguments, paths, everything else */
+  --tut-cmd: #8fd8ff; /* the program on the line — the page's accent */
+  --tut-flag: #d9a85c; /* -f and --flags; the same amber as the warning rule */
+  --tut-muted: #a1a1aa;
+  --tut-faint: #71717a;
+  --tut-accent: #8fd8ff;
+  --tut-warn: #d9a85c;
+  --tut-warn-tint: rgba(217, 168, 92, 0.06);
+}
+
+.tut {
+  min-height: 100svh;
+  background: var(--tut-bg);
+  color: var(--tut-text);
+  /* Long paths and URLs must never push the column sideways on a phone.
+     `pre` opts out on its own — a command block scrolls instead. */
+  overflow-wrap: break-word;
+}
+
+/* The page owns the overscroll gutter too, and it has to beat
+   `body { background }` in index.css whatever order the two source files
+   land in the bundle. `:has()` raises the specificity without a global
+   rule, and only ever matches on the tutorial page. */
+body:has(.tut) {
+  background: var(--tut-bg);
+}
+
+/* --- inline elements, written straight inside content.tsx ----------- */
+
+.tut a {
+  color: var(--tut-accent);
+  text-decoration: none;
+  border-radius: 3px;
+  transition: color 0.2s ease;
+}
+.tut a:hover {
+  color: #b6e6ff;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+/* Inline code only — never the <code> that wraps a command block. */
+.tut :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  padding: 0.1em 0.36em;
+  border-radius: 5px;
+  background: var(--tut-surface-2);
+  border: 1px solid var(--tut-line-soft);
+  color: var(--tut-code);
+}
+
+.tut strong {
+  color: var(--tut-heading);
+  font-weight: 600;
+}
+
+.tut ul,
+.tut ol {
+  margin: 1em 0;
+  padding-left: 1.4em;
+}
+.tut ul {
+  list-style: disc;
+}
+.tut ol {
+  list-style: decimal;
+}
+.tut li {
+  margin: 0.35em 0;
+  padding-left: 0.25em;
+}
+.tut li::marker {
+  color: var(--tut-faint);
+}
+
+/* --- focus: visible for keyboards, absent for mice ------------------ */
+
+.tut a:focus-visible,
+.tut button:focus-visible {
+  outline: 2px solid var(--tut-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* --- horizontal scroll for command blocks --------------------------- */
+
+.tut-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
+}
+.tut-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+.tut-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.tut-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 99px;
+}
+.tut-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+/* --- nothing here moves unless the reader allows it ----------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tut *,
+  .tut *::before,
+  .tut *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

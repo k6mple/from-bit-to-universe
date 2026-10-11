@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0A0A0A" />
+    <meta name="color-scheme" content="dark" />
+    <title>Claude Code 配置教程</title>
+    <meta name="description" content="Claude Code 的安装与配置教程。" />
+    <style>
+      /* Must match --color-tut-bg, or the page flashes a different black
+         before the bundle paints. */
+      html, body { margin: 0; background: #0a0a0a; }
+      #root { min-height: 100vh; }
+      /* Prevent any flash of unstyled white before the bundle boots. */
+      .boot-void { position: fixed; inset: 0; background: #0a0a0a; z-index: 0; }
+    </style>
+  </head>
+  <body>
+    <div class="boot-void"></div>
+    <div id="root"></div>
+    <script type="module" src="/src/tutorial/main.tsx"></script>
+  </body>
+</html>

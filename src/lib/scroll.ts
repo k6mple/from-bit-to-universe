@@ -38,7 +38,12 @@ export function initScroll(
 
     if (!bounds.length) return
 
-    let seg = CHAPTER_COUNT - 1
+    // Past the last chapter's pinned window — the exit section at the tail of
+    // the document — the finale holds its own end value. Falling back to the
+    // last chapter *index* instead snapped `seg` from 6.9999 to 6 on the way
+    // in, which damped the field's dispersal away and pulled the rail back as
+    // the visitor reached the door.
+    let seg = CHAPTER_COUNT - 0.0001
     if (y <= bounds[0].start) {
       seg = 0
     } else {
